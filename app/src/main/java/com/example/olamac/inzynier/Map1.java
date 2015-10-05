@@ -1,37 +1,40 @@
 package com.example.olamac.inzynier;
 
+
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
-public class Map1 extends AppCompatActivity {
+public class Map1 extends Fragment {
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map1);
+    public static Map1 newInstance() {
+        Map1 fragment = new Map1();
+        return fragment;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_map1, menu);
-        return true;
+    public Map1() {
     }
 
+    Button ClickMe;
+    TextView tv;
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        View rootView = inflater.inflate(R.layout.activity_map1, container, false);
 
-        return super.onOptionsItemSelected(item);
+
+        return rootView;
     }
+
+
+
 }

@@ -2,6 +2,7 @@ package com.example.olamac.inzynier;
 
 import java.util.Locale;
 
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowTitleEnabled(false);
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -127,6 +130,14 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
+
+            switch(position){
+                case 0: return Map1.newInstance();
+                case 1 :  return PlaceholderFragment.newInstance(position + 1);
+                // default: return MyFragment.newInstance();
+/* It is better to use default so that it always returns a fragment and no problems would ever occur */
+            }
+
             return PlaceholderFragment.newInstance(position + 1);
         }
 

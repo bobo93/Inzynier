@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Map1"
+            android:label="@string/title_activity_map1" >
+        </activity>
     </application>
 
 </manifest>
