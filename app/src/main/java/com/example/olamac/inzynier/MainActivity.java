@@ -2,7 +2,6 @@ package com.example.olamac.inzynier;
 
 import java.util.Locale;
 
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -11,13 +10,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -132,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             switch(position){
-                case 0: return Map1.newInstance();
+                case 0: return Map.newInstance();
                 case 1 :  return PlaceholderFragment.newInstance(position + 1);
                 // default: return MyFragment.newInstance();
 /* It is better to use default so that it always returns a fragment and no problems would ever occur */
