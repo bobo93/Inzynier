@@ -10,11 +10,12 @@ public class SrodekTransportu implements Serializable {
     private String nazwa;
     private double x;
     private double y;
-
-    SrodekTransportu(String nazwa, double x, double y){
+    private int k;
+    SrodekTransportu(String nazwa, double x, double y, int k){
         this.nazwa = nazwa;
         this.x = x;
         this.y = y;
+        this.k=k;
 
     }
 
@@ -29,7 +30,9 @@ public class SrodekTransportu implements Serializable {
     public String getNazwa(){
         return nazwa;
     }
-
+    public int getK() {
+        return k;
+    }
 
 
 }

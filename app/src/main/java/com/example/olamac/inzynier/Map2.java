@@ -1,9 +1,15 @@
 package com.example.olamac.inzynier;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -13,51 +19,79 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Map2 extends FragmentActivity {
 
+    SrodekTransportu[] transports = new SrodekTransportu[10];
+    SrodekTransportu przenies = new SrodekTransportu("edward", 10, 10, 111);
+    String numer;
+
+    java.util.Map<Integer, Marker> markers = new HashMap<Integer,Marker >();
+
+    boolean flaga=false;
+
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    SrodekTransportu[] tablica = new SrodekTransportu[10];
+//    SrodekTransportu[] tablica = new SrodekTransportu[10];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map2);
 
-
-
-
         Intent intent = getIntent();
-        SrodekTransportu[] transports = (SrodekTransportu[]) intent.getSerializableExtra("przenies");
-        tablica = transports;
-        Log.d("map2", String.valueOf(transports[0].getNazwa()));
-       Log.d("map", (String) intent.getSerializableExtra("przenies2"));
+        String numer = (String) intent.getSerializableExtra("przenies2");
+        this.numer = numer;
 
-        setUpMapIfNeeded();
+//            new NewRequest().execute();
+        runThread();
+
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setUpMapIfNeeded();
+    private void update() {
+
+
+        for (int i = 0; i < transports.length; i++) {
+
+            if ((transports[i] != null) && (markers.containsKey(transports[i].getK()))) {
+                Marker a = markers.get(transports[i].getK());
+
+                Log.d("markers", a.getPosition().toString());
+                Log.d("transport", Double.toString(transports[i].getX())+Double.toString(transports[i].getY()));
+
+                a.setPosition(new LatLng(transports[i].getX(), transports[i].getY()));
+                // .position(new LatLng(xs,ys))
+//                a.setTitle(transports[i].getNazwa());
+//                a.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.bus));
+
+            }
+        }
+    }
+    private void runThread(){
+        ScheduledExecutorService scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
+
+// This schedule a runnable task every 2 minutes
+        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                new NewRequest().execute();
+            }
+        }, 0, 1, TimeUnit.MINUTES);
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
@@ -81,25 +115,104 @@ public class Map2 extends FragmentActivity {
 //       mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
 
 
-        for (int i = 0; i < tablica.length; i++) {
+        for (int i = 0; i < transports.length; i++) {
 
-            if(tablica[i]!= null) {
-                Log.d("setupmap","weszło");
+            if(transports[i]!= null) {
+
+
+               Marker marker=
                 mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(tablica[i].getX(), tablica[i].getY()))
+                                .position(new LatLng(transports[i].getX(), transports[i].getY()))
                                         // .position(new LatLng(xs,ys))
-                                .title(tablica[i].getNazwa())
+                                .title(transports[i].getNazwa())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
 
                 );
+                markers.put((transports[i].getK()),marker);
+                transports[i]=null;
             }
         }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(tablica[1].getX(), tablica[1].getY()), 12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(transports[0].getX(), transports[0].getY()), 12));
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMyLocationEnabled(true);
 
+
+
     }
+
+
+    public class NewRequest extends AsyncTask<String, Integer, JSONArray> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected JSONArray doInBackground(String... params) {
+
+            try {
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+
+                HttpGet httpGet = new HttpGet(
+                        "http://10.0.2.2:8080/");
+                Log.d("test","łączy sie");
+
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                HttpEntity httpEntity = httpResponse.getEntity();
+
+                String response = EntityUtils.toString(httpEntity);
+
+
+                return new JSONArray(response);
+
+            } catch (Exception e) {
+                Log.e("Exception", e.toString());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result) {
+            super.onPostExecute(result);
+
+
+            try {
+
+                int p=0;
+                List<JSONObject> a = new ArrayList<JSONObject>();
+                for (int i=0;i<result.length(); i++) {
+                    a.add(result.getJSONObject(i));
+                    //Log.d("test",result.getJSONObject((i)).toString());
+                }
+
+                for (int i=0;i<result.length(); i++) {
+                    if (numer.equals(a.get(i).getString("name"))) {
+
+                        SrodekTransportu transport = new SrodekTransportu(a.get(i).getString("name"), Double.parseDouble(a.get(i).getString("x")), Double.parseDouble(a.get(i).getString("y")), Integer.parseInt(a.get(i).getString("k")));
+                        przenies = transport;
+
+                        transports[p] = transport;
+                        p = p + 1;
+                    }
+                }
+                if (flaga==false){
+                    setUpMapIfNeeded();
+                    flaga=true;
+                }else{
+                    update();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+
 
 
 
