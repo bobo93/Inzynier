@@ -1,21 +1,39 @@
 package com.example.olamac.inzynier;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Map2 extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    SrodekTransportu[] tablica = new SrodekTransportu[10];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map2);
+
+
+
+
+        Intent intent = getIntent();
+        SrodekTransportu[] transports = (SrodekTransportu[]) intent.getSerializableExtra("przenies");
+        tablica = transports;
+        Log.d("map2", String.valueOf(transports[0].getNazwa()));
+       Log.d("map", (String) intent.getSerializableExtra("przenies2"));
+
         setUpMapIfNeeded();
     }
 
@@ -60,6 +78,29 @@ public class Map2 extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+//       mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+
+        for (int i = 0; i < tablica.length; i++) {
+
+            if(tablica[i]!= null) {
+                Log.d("setupmap","weszło");
+                mMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(tablica[i].getX(), tablica[i].getY()))
+                                        // .position(new LatLng(xs,ys))
+                                .title(tablica[i].getNazwa())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bus))
+
+                );
+            }
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(tablica[1].getX(), tablica[1].getY()), 12));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.setMyLocationEnabled(true);
+
     }
+
+
+
 }

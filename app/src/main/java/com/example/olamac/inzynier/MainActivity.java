@@ -2,6 +2,7 @@ package com.example.olamac.inzynier;
 
 import java.util.Locale;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RadioGroup;
+import android.widget.Toast;
+
+import org.json.JSONArray;
 
 public class MainActivity extends AppCompatActivity implements ActionBar.TabListener {
 
@@ -113,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -129,8 +137,10 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             switch(position){
-                case 0: return Map.newInstance();
-                case 1 :  return PlaceholderFragment.newInstance(position + 1);
+                case 0: return Trasa.newInstance();
+                case 1: return Map.newInstance();
+
+//                case 1 :  return PlaceholderFragment.newInstance(position + 1);
                 // default: return MyFragment.newInstance();
 /* It is better to use default so that it always returns a fragment and no problems would ever occur */
             }
@@ -141,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -152,8 +162,7 @@ public class MainActivity extends AppCompatActivity implements ActionBar.TabList
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
+
             }
             return null;
         }
